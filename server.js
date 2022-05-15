@@ -22,10 +22,10 @@ const client = new MongoClient(uri);
  /* Our database and collection */
 const databaseAndCollection = {db: m_db, collection: m_collection};
 
-async function insertApplication(client, databaseAndCollection, newApp) {
+async function insertPokemon(client, databaseAndCollection, newPokemon) {
     try {
         await client.connect();
-        const result = await client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(newApp);
+        const result = await client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(newPokemon);
     } catch (e) {
         console.error(e);
     } finally {
@@ -33,28 +33,28 @@ async function insertApplication(client, databaseAndCollection, newApp) {
     }
 }
 
-async function lookUpApplication(client, databaseAndCollection, appEmail) {
-    let result;
-    try {
-        await client.connect();
-        let filter = {email: appEmail};
-        result = await client.db(databaseAndCollection.db)
-                            .collection(databaseAndCollection.collection)
-                            .findOne(filter);
-    } catch (e) {
-        console.error(e);
-    } finally {
-        await client.close();
-        return result;
-    } 
-}
+// async function lookUpApplication(client, databaseAndCollection, appEmail) {
+//     let result;
+//     try {
+//         await client.connect();
+//         let filter = {email: appEmail};
+//         result = await client.db(databaseAndCollection.db)
+//                             .collection(databaseAndCollection.collection)
+//                             .findOne(filter);
+//     } catch (e) {
+//         console.error(e);
+//     } finally {
+//         await client.close();
+//         return result;
+//     } 
+// }
 
-async function lookUpByGPA(client, databaseAndCollection, minGPA) {
+async function lookUpByOwner(client, databaseAndCollection, user) {
     let cursor;
     let result;
     try {
         await client.connect();
-        let filter = {gpa : { $gte: minGPA}};
+        let filter = {owner : { $eq: user}};
         cursor = client.db(databaseAndCollection.db)
         .collection(databaseAndCollection.collection)
         .find(filter);
@@ -67,7 +67,9 @@ async function lookUpByGPA(client, databaseAndCollection, minGPA) {
     }
 }
 
-async function clearApplications(client, databaseAndCollection) {
+
+
+async function clearPokemon(client, databaseAndCollection) {
     let deletedNum;
     try {
         await client.connect();
@@ -95,44 +97,42 @@ app.get("/", function(request, response) {
 response.render("index");
 });
 
-app.get("/apply", function(request, response) {
-    response.render("apply");
+app.get("/addPokemon", function(request, response) {
+    response.render("addPokeom");
 });
 
-app.post("/processApplication", async (request, response) => {
-    let application = {
-        name: request.body.name,
-        email: request.body.email,
-        gpa: request.body.gpa,
-        background: request.body.backgroundInfo
+app.post("/processAddPokemon", async (request, response) => {
+    let pokemonEntry = {
+        owner: request.body.name,
+        pokemon: request.body.pokemon,
     };   
 
-    await insertApplication(client, databaseAndCollection, application);
+    await insertPokemon(client, databaseAndCollection, pokemonEntry);
 
-    application.time = Date();
     response.render("processApplication", application);
 });
 
-app.get("/adminGFA", function(request, response) {
-    response.render("adminGFA");
+app.get("/getUser", function(request, response) {
+    response.render("getUser");
 });
 
 
-app.post("/processAdminGFA", async (request, response) => {
-    let minGPA = request.body.gpa;
+app.post("/processGetUser", async (request, response) => {
+    let user = request.body.name;
       
-    result = await lookUpByGPA(client, databaseAndCollection, minGPA);
+    result = await lookUpByOwner(client, databaseAndCollection, user);
     let variables = {
+        user: request.body.name,
         tableElements: ""
     }
     result.forEach(function(application) {
         variables.tableElements += "\t<tr><td>";
-        variables.tableElements += application.name;
+        variables.tableElements += application.pokemon;
         variables.tableElements += "</td><td>"
-        variables.tableElements += application.gpa;
+        variables.tableElements += "API INFORMATION";
         variables.tableElements += "</td></tr>\n";
     })
-    response.render("processAdminGFA", variables);
+    response.render("processGetUser", variables);
 });
 
 app.get("/reviewApplication", function(request, response) {

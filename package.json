@@ -1,12 +1,12 @@
 {
-  "name": "summercamp",
+  "name": "cmsc335final",
   "version": "1.0.0",
-  "description": "",
   "main": "summerCampServer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
-  "author": "",
+  "author": "Rithvik Bobbili, Alex Zhu, Brian Zhu",
   "license": "ISC",
   "dependencies": {
     "ejs": "^3.1.7",
@@ -15,5 +15,14 @@
     "nodemon": "^2.0.15",
     "dotenv": "^16.0.0",
     "mongodb": "^4.5.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rithvikb/cmsc335final.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rithvikb/cmsc335final/issues"
+  },
+  "homepage": "https://github.com/rithvikb/cmsc335final#readme",
+  "description": ""
 }
