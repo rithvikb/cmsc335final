@@ -98,7 +98,7 @@ response.render("index");
 });
 
 app.get("/addPokemon", function(request, response) {
-    response.render("addPokeom");
+    response.render("addPokemon");
 });
 
 app.post("/processAddPokemon", async (request, response) => {
@@ -107,17 +107,17 @@ app.post("/processAddPokemon", async (request, response) => {
         pokemon: request.body.pokemon,
     };   
 
-    await insertPokemon(client, databaseAndCollection, pokemonEntry);
+    //await insertPokemon(client, databaseAndCollection, pokemonEntry);
 
-    response.render("processApplication", application);
+    response.render("index", application);
 });
 
-app.get("/getUser", function(request, response) {
-    response.render("getUser");
+app.get("/getTrainer", function(request, response) {
+    response.render("getTrainer");
 });
 
 
-app.post("/processGetUser", async (request, response) => {
+app.post("/processGetTrainer", async (request, response) => {
     let user = request.body.name;
       
     result = await lookUpByOwner(client, databaseAndCollection, user);
@@ -139,40 +139,40 @@ app.get("/reviewApplication", function(request, response) {
     response.render("reviewApplication");
 });
 
-app.post("/processReviewApplication", async (request, response) => {
-    let email = request.body.email;
+// app.post("/processReviewApplication", async (request, response) => {
+//     let email = request.body.email;
       
-    result = await lookUpApplication(client, databaseAndCollection, email);
-    let variables;
-    if(result) {
-        variables = {
-            name: result.name,
-            email: result.email,
-            gpa: result.gpa,
-            background: result.background,
-            time: Date()
-        }; 
-    } else {
-        variables = {
-            name: "NONE",
-            email: "NONE",
-            gpa: "NONE",
-            background: "NONE",
-            time: Date()
-        }
-    }
-    response.render("processReviewApplication", variables);
+//     result = await lookUpApplication(client, databaseAndCollection, email);
+//     let variables;
+//     if(result) {
+//         variables = {
+//             name: result.name,
+//             email: result.email,
+//             gpa: result.gpa,
+//             background: result.background,
+//             time: Date()
+//         }; 
+//     } else {
+//         variables = {
+//             name: "NONE",
+//             email: "NONE",
+//             gpa: "NONE",
+//             background: "NONE",
+//             time: Date()
+//         }
+//     }
+//     response.render("processReviewApplication", variables);
+// });
+
+app.get("/clearDatabase", function(request, response) {
+    response.render("clearDatabase");
 });
 
-app.get("/adminRemove", function(request, response) {
-    response.render("adminRemove");
-});
-
-app.post("/processAdminRemove", async (request, response) => {
+app.post("/processClearDatabase", async (request, response) => {
     let variables = {
         numRemoved: await clearApplications(client, databaseAndCollection)
     };
-    response.render("processAdminRemove", variables);
+    response.render("index", variables);
 });
 
 // CLI Program
