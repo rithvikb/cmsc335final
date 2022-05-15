@@ -4,6 +4,7 @@ let express = require("express");
 let portNum = process.argv[2]
 let app = express();
 let bodyParser = require("body-parser");
+let axios = require("axios");
 
 let url = "http://localhost:" + portNum;
 
@@ -108,12 +109,27 @@ app.post("/processGetTrainer", async (request, response) => {
         pokeTable: ""
     }
     result.forEach(function(pair) {
+        let temp = ""
         variables.pokeTable += "\t<tr><td>";
         variables.pokeTable += pair.pokemon;
-        variables.pokeTable += "</td><td>"
-        variables.pokeTable += "API INFORMATION";
+        variables.pokeTable += "</td><td>";
+
+        let url = `https://pokeapi.co/api/v2/pokemon/${pair.pokemon}`
+        console.log(url)
+        axios
+            .get(url)
+            .then(res => {
+                temp = res.data.species.name
+            })
+            .catch(error => {
+            console.error(error);
+            });
+
+        variables.pokeTable += temp;
         variables.pokeTable += "</td></tr>\n";
+        
     })
+
     response.render("display", variables);
 });
 
