@@ -5,10 +5,20 @@
 	<title>PokeTable</title>
 </head>
 <body>
-	<h1>Display Pokemon of Trainer</h1>
+	<h1>Display Pokemon of <%- user %></h1>
 	<div style="margin-bottom:10px;">
-		<%- pokeTable %>
+		<table border="1">
+			<thead>
+				<tr><th>Pokemon</th><th>Stats</th></tr>
+			</thead>
+			<tbody>
+				<%- pokeTable %>
+			</tbody>
+		</table>
 	</div>
-    <a href="/"><u>Add Pokemon to Trainer</u></a>
+    <a href="/addPokemon"><u>Add a Pokemon to Trainer</u></a><br>
+    <a href="/getTrainer"><u>Get Pokemon by Trainer</u></a><br>
+	<a href="/clearDatabase"><u>Clear Pokebase</u></a><br>
+	<a href="/"><u>HOME</u></a>
 </body>
 </html>

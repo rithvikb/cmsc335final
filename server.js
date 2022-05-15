@@ -33,22 +33,6 @@ async function insertPokemon(client, databaseAndCollection, newPokemon) {
     }
 }
 
-// async function lookUpApplication(client, databaseAndCollection, appEmail) {
-//     let result;
-//     try {
-//         await client.connect();
-//         let filter = {email: appEmail};
-//         result = await client.db(databaseAndCollection.db)
-//                             .collection(databaseAndCollection.collection)
-//                             .findOne(filter);
-//     } catch (e) {
-//         console.error(e);
-//     } finally {
-//         await client.close();
-//         return result;
-//     } 
-// }
-
 async function lookUpByOwner(client, databaseAndCollection, user) {
     let cursor;
     let result;
@@ -66,8 +50,6 @@ async function lookUpByOwner(client, databaseAndCollection, user) {
         return result;
     }
 }
-
-
 
 async function clearPokemon(client, databaseAndCollection) {
     let deletedNum;
@@ -107,9 +89,9 @@ app.post("/processAddPokemon", async (request, response) => {
         pokemon: request.body.pokemon,
     };   
 
-    //await insertPokemon(client, databaseAndCollection, pokemonEntry);
+    await insertPokemon(client, databaseAndCollection, pokemonEntry);
 
-    response.render("index", application);
+    response.render("addPokemon");
 });
 
 app.get("/getTrainer", function(request, response) {
@@ -118,51 +100,23 @@ app.get("/getTrainer", function(request, response) {
 
 
 app.post("/processGetTrainer", async (request, response) => {
-    let user = request.body.name;
+    let user = request.body.trainer;
       
     result = await lookUpByOwner(client, databaseAndCollection, user);
     let variables = {
-        user: request.body.name,
-        tableElements: ""
+        user: request.body.trainer,
+        pokeTable: ""
     }
-    result.forEach(function(application) {
-        variables.tableElements += "\t<tr><td>";
-        variables.tableElements += application.pokemon;
-        variables.tableElements += "</td><td>"
-        variables.tableElements += "API INFORMATION";
-        variables.tableElements += "</td></tr>\n";
+    result.forEach(function(pair) {
+        variables.pokeTable += "\t<tr><td>";
+        variables.pokeTable += pair.pokemon;
+        variables.pokeTable += "</td><td>"
+        variables.pokeTable += "API INFORMATION";
+        variables.pokeTable += "</td></tr>\n";
     })
-    response.render("processGetUser", variables);
+    response.render("display", variables);
 });
 
-app.get("/reviewApplication", function(request, response) {
-    response.render("reviewApplication");
-});
-
-// app.post("/processReviewApplication", async (request, response) => {
-//     let email = request.body.email;
-      
-//     result = await lookUpApplication(client, databaseAndCollection, email);
-//     let variables;
-//     if(result) {
-//         variables = {
-//             name: result.name,
-//             email: result.email,
-//             gpa: result.gpa,
-//             background: result.background,
-//             time: Date()
-//         }; 
-//     } else {
-//         variables = {
-//             name: "NONE",
-//             email: "NONE",
-//             gpa: "NONE",
-//             background: "NONE",
-//             time: Date()
-//         }
-//     }
-//     response.render("processReviewApplication", variables);
-// });
 
 app.get("/clearDatabase", function(request, response) {
     response.render("clearDatabase");
@@ -170,7 +124,7 @@ app.get("/clearDatabase", function(request, response) {
 
 app.post("/processClearDatabase", async (request, response) => {
     let variables = {
-        numRemoved: await clearApplications(client, databaseAndCollection)
+        numRemoved: await clearPokemon(client, databaseAndCollection)
     };
     response.render("index", variables);
 });
