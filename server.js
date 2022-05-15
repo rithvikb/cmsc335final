@@ -1,12 +1,12 @@
 let http = require("http");
 let path = require("path");
 let express = require("express");
-let portNum = process.argv[2]
 let app = express();
 let bodyParser = require("body-parser");
 let axios = require("axios");
 
-let url = "http://localhost:" + portNum;
+const port = 5001;
+let url = "http://localhost:5001";
 
 require("dotenv").config({ path: path.resolve(__dirname, '.env') }) 
 
@@ -69,20 +69,19 @@ async function clearPokemon(client, databaseAndCollection) {
     }
 }
 
-async function getPokemonStats(pokemon) {
+async function getPokemonImg(pokemon) {
     let response = "";
     await axios
         .get(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
         .then(res => {
-            response = res.data.species.name;
+            response = res.data.sprites.front_default;
+            //console.log(res);
         })
         .catch(error => {
         console.error(error);
         });
     return response;
 }
-
-
 
 app.set("views", path.resolve(__dirname, "templates"));
 app.set("view engine", "ejs");
@@ -128,47 +127,15 @@ app.post("/processGetTrainer", async (request, response) => {
         variables.pokeTable += "\t<tr><td>";
         variables.pokeTable += result[i].pokemon;
         variables.pokeTable += "</td><td>";
-        let stats = await getPokemonStats(result[i].pokemon);
-        variables.pokeTable += stats;
-        console.log("ran2");
+        let imgUrl = await getPokemonImg(result[i].pokemon);
+        variables.pokeTable += "<img src=";
+        variables.pokeTable += imgUrl;
+        variables.pokeTable += ">"
         variables.pokeTable += "</td></tr>\n";
 
     }
-    // await result.forEach(async function(pair) {
-    //     // let temp = ""
-    //     variables.pokeTable += "\t<tr><td>";
-    //     variables.pokeTable += pair.pokemon;
-    //     variables.pokeTable += "</td><td>";
-
-    //     // let url = `https://pokeapi.co/api/v2/pokemon/${pair.pokemon}`
-    //     // console.log(url);
-    //     // await axios
-    //     //     .get(url)
-    //     //     .then(res => {
-    //     //         temp = res.data.species.name;
-    //     //     })
-    //     //     .catch(error => {
-    //     //     console.error(error);
-    //     //     });
-
-    //     // console.log(temp);
-
-    //     let stats = await getPokemonStats(pair.pokemon);
-        
-    //     //await getStats(pair.pokemon);
-       
-    //     variables.pokeTable += stats;
-    //     console.log("ran2");
-    //     variables.pokeTable += "</td></tr>\n";
-    //     console.log("ran3");
-    // })
-
     response.render("display", variables);
-    console.log("ran4");
 });
-
-
-
 
 app.get("/clearDatabase", function(request, response) {
     response.render("clearDatabase");
@@ -185,7 +152,7 @@ app.post("/processClearDatabase", async (request, response) => {
 process.stdin.setEncoding("utf8");
 
 console.log("Web server started and running at " + url);
-http.createServer(app).listen(portNum);
+http.createServer(app).listen(port);
 
 process.stdin.on('readable', function() {
     let dataInput = process.stdin.read();
