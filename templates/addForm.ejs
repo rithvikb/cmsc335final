@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Pokebase</title>
+</head>
+<body>
+	<h1>Add to Pokebase</h1>
+	<form action="/process" method="post">
+		<fieldset>
+			<label><b>Name: </b><input type="text" name="name"/></label>
+			<label><b>Pokemon: </b><input type="text" name="pokemon"></label><br>
+        </fieldset>
+		<br>
+		<input type="reset" />
+		<input type="submit" value="Submit"/>
+        <hr>
+	</form>
+    <a href="/delete"><u>Clear Pokebase</u></a><br>
+    <a href="/retrieve"><u>Get Pokemon by Trainer</u></a>
+</body>
+</html>
+
