@@ -82,14 +82,6 @@ async function getPokemonStats(pokemon) {
     return response;
 }
 
-async function getStats(pokemon) {
-    try {
-      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
 
 app.set("views", path.resolve(__dirname, "templates"));
@@ -131,35 +123,45 @@ app.post("/processGetTrainer", async (request, response) => {
         user: request.body.trainer,
         pokeTable: ""
     }
-    await result.forEach(async function(pair) {
-        // let temp = ""
+
+    for (let i = 0; i < result.length; i++) {
         variables.pokeTable += "\t<tr><td>";
-        variables.pokeTable += pair.pokemon;
+        variables.pokeTable += result[i].pokemon;
         variables.pokeTable += "</td><td>";
-
-        // let url = `https://pokeapi.co/api/v2/pokemon/${pair.pokemon}`
-        // console.log(url);
-        // await axios
-        //     .get(url)
-        //     .then(res => {
-        //         temp = res.data.species.name;
-        //     })
-        //     .catch(error => {
-        //     console.error(error);
-        //     });
-
-        // console.log(temp);
-
-        //let stats = await getPokemonStats(pair.pokemon);
-        
-        await getStats(pair.pokemon);
-       
+        let stats = await getPokemonStats(result[i].pokemon);
         variables.pokeTable += stats;
         console.log("ran2");
         variables.pokeTable += "</td></tr>\n";
-        console.log("ran3");
+
+    }
+    // await result.forEach(async function(pair) {
+    //     // let temp = ""
+    //     variables.pokeTable += "\t<tr><td>";
+    //     variables.pokeTable += pair.pokemon;
+    //     variables.pokeTable += "</td><td>";
+
+    //     // let url = `https://pokeapi.co/api/v2/pokemon/${pair.pokemon}`
+    //     // console.log(url);
+    //     // await axios
+    //     //     .get(url)
+    //     //     .then(res => {
+    //     //         temp = res.data.species.name;
+    //     //     })
+    //     //     .catch(error => {
+    //     //     console.error(error);
+    //     //     });
+
+    //     // console.log(temp);
+
+    //     let stats = await getPokemonStats(pair.pokemon);
         
-    })
+    //     //await getStats(pair.pokemon);
+       
+    //     variables.pokeTable += stats;
+    //     console.log("ran2");
+    //     variables.pokeTable += "</td></tr>\n";
+    //     console.log("ran3");
+    // })
 
     response.render("display", variables);
     console.log("ran4");

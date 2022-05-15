@@ -9,7 +9,7 @@
 	<form action="/processAddPokemon" method="post" onsubmit="return alert('Pokemon added!');">
 		<fieldset>
 			<label><b>Name: </b><input type="text" name="name"/></label>
-			<label><b>Pokemon: </b><input type="text" name="pokemon"></label><br>
+			<label><b>Pokemon: </b><input type="text" name="pokemon" pattern="[a-z]*"></label><br>
         </fieldset>
 		<br>
 		<input type="reset" />
