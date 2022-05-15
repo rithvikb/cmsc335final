@@ -18,6 +18,7 @@ const m_collection = process.env.MONGO_COLLECTION;
 const uri = `mongodb+srv://${userName}:${password}@cluster0.kfwwn.mongodb.net/CMSC335_DB?retryWrites=true&w=majority`;
  
 const {MongoClient} = require('mongodb');
+const { response } = require("express");
 const client = new MongoClient(uri);
 
  /* Our database and collection */
@@ -68,6 +69,17 @@ async function clearPokemon(client, databaseAndCollection) {
     }
 }
 
+// async function getPokemonStats(pokemon) {
+//     axios
+//         .get(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
+//         .then(res => {
+//             return res.data.species.name;
+//         })
+//         .catch(error => {
+//         console.error(error);
+//         });
+// }
+
 
 app.set("views", path.resolve(__dirname, "templates"));
 app.set("view engine", "ejs");
@@ -108,24 +120,26 @@ app.post("/processGetTrainer", async (request, response) => {
         user: request.body.trainer,
         pokeTable: ""
     }
-    result.forEach(function(pair) {
+    result.forEach(async function(pair) {
         let temp = ""
         variables.pokeTable += "\t<tr><td>";
         variables.pokeTable += pair.pokemon;
         variables.pokeTable += "</td><td>";
 
         let url = `https://pokeapi.co/api/v2/pokemon/${pair.pokemon}`
-        console.log(url)
-        axios
+        console.log(url);
+        await axios
             .get(url)
             .then(res => {
-                temp = res.data.species.name
+                temp = res.data.species.name;
             })
             .catch(error => {
             console.error(error);
             });
 
-        variables.pokeTable += temp;
+        console.log(temp);
+
+        variables.pokeTable += "BRUHHHHH";
         variables.pokeTable += "</td></tr>\n";
         
     })
