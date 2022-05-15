@@ -5,8 +5,8 @@ let app = express();
 let bodyParser = require("body-parser");
 let axios = require("axios");
 
-const port = 5001;
-let url = "http://localhost:5001";
+const port = process.env.PORT || 5001;
+let url = `http://localhost:${port}`;
 
 require("dotenv").config({ path: path.resolve(__dirname, '.env') }) 
 
