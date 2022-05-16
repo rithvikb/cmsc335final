@@ -7,4 +7,4 @@ App Description: A website that uses the PokeAPI to save sprites of Pokemon to u
 
 API Links: https://pokeapi.co/api/v2/pokemon/
 
-Link to Youtube Video:
+Link to Youtube Video: https://youtu.be/S5gqCHyl9pk
